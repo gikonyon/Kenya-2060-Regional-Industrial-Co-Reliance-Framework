@@ -1,0 +1,7 @@
+# Comparative Growth Models: Learning from Global Success
+
+| Dimension | China Model (Export-Led & Spatial Sequencing) | Morocco Model (Tanger Med Integration) | President Ruto's Vision & Kenya 2060 Integration |
+| :--- | :--- | :--- | :--- |
+| **Financing & Capital Mobilization** | State-directed banking, domestic savings mobilization, and phased foreign direct investment. | Sovereign-backed long-term strategic vehicles combined with international maritime and industrial partners. | **Asset Monetization & National Infrastructure Fund (NIF)**: Leveraging privatization proceeds alongside public-private partnerships under strict parliamentary oversight. |
+| **Project Protection & Legal Sustainability** | Top-down unitary execution with minimal judicial friction. | Royal long-term strategic continuity backed by autonomous development agencies. | **Constitutional Safeguards**: Pre-empts court challenges by fusing executive development ambitions with Articles 10, 201, and public participation statutes[cite: 2]. |
+| **Industrial Linkage** | Strict coupling of infrastructure to manufacturing and global supply chains ("Flying Geese" model). | Integration of mega-ports directly with tax-free industrial platforms (automotive, aerospace)[cite: 2]. | **Infrastructure-to-Industry Co-Investment Mandate**: Outlaws standalone white-elephant projects; every shilling must be tied to pre-committed county offtake[cite: 2]. |
