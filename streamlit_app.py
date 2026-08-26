@@ -249,4 +249,3 @@ elif app_mode == "Infrastructure-to-Industry Mandate":
 # Footer
 str_lit.markdown("---")
 str_lit.markdown("*Repository maintained under Git version control. Contributions and policy pull requests open for stakeholders.*")
-str_lit.markdown("*Repository maintained under Git version control. Contributions and policy pull requests open for stakeholders.*")
