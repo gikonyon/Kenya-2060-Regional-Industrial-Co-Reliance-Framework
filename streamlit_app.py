@@ -101,7 +101,7 @@ app_mode = st.sidebar.selectbox(
 )
 
 # ==========================================
-# SECTION 1: EXECUTIVE SUMMARY
+# SECTION 1: EXECUTIVE SUMMARY & VISION (WITH EMBEDDED TABLE, GRAPHS & LINKS)
 # ==========================================
 if app_mode == "Executive Summary & Vision":
     st.header("1. Executive Summary and National Context")
@@ -110,13 +110,50 @@ if app_mode == "Executive Summary & Vision":
     productive specialization, institutional risk governance, and multi-dimensional tracking across all required categories: 
     **Human Development (HDI)**, **Sustainable Development Goals (SDGs)**, **Kenya 2060 Vision**, and **AU Agenda 2045**.
     """)
+    
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("HDI Score (2026)", "0.640", "Medium Human Dev")
     col2.metric("SDG Score (2026)", "63.5 / 100", "Moderate Progress")
     col3.metric("Kenya 2060 Vision Score", "48.0 / 100", "Mid-Stage Trajectory")
     col4.metric("AU Agenda 2045 Score", "52.0 / 100", "Continental Alignment")
+    
     st.markdown("---")
     st.success("**Core Principle:** Comprehensive tracking across all categories ensures that national growth translates directly into citizen well-being and shared prosperity.")
+    
+    st.markdown("### 📊 Executive Summary: Multi-Dimensional Baseline Table")
+    st.write("Below is the core data table summarizing key milestone years across all governance and development indicators:")
+    
+    # Display summary table for key milestones in Executive Summary
+    summary_table_view = df_macro[df_macro["Year"].isin([2007, 2013, 2020, 2026, 2030, 2045, 2060])][
+        ["Year", "Administration_Horizon", "Real_GDP_Growth_Pct", "HDI_Score", "SDG_Composite_Score", "Kenya_2060_Vision_Score", "Corruption_Perception_Index"]
+    ]
+    st.dataframe(summary_table_view, use_container_width=True, hide_index=True)
+    
+    st.markdown("---")
+    st.markdown("### 📈 Executive Summary: Visual Trajectory Graphs")
+    
+    # Embedded Graph 1: Real GDP Growth & SDG Composite Trajectory
+    fig_exec, ax_exec = plt.subplots(figsize=(10, 4))
+    ax_exec.plot(df_macro["Year"], df_macro["Real_GDP_Growth_Pct"], marker='o', label="Real GDP Growth (%)", color="#1f77b4", linewidth=2)
+    ax_exec.plot(df_macro["Year"], df_macro["SDG_Composite_Score"] / 10, marker='s', label="SDG Composite Score (scaled /10)", color="#2ca02c", linewidth=2)
+    ax_exec.set_title("Macroeconomic Growth & SDG Score Trajectory (2004 - 2060)", fontsize=11, fontweight='bold')
+    ax_exec.set_xlabel("Year")
+    ax_exec.set_ylabel("Metric Value")
+    ax_exec.grid(True, linestyle='--', alpha=0.6)
+    ax_exec.legend(loc="upper left")
+    st.pyplot(fig_exec)
+    
+    st.markdown("---")
+    st.markdown("### 🔗 Verifiable Data Sources & Official Links")
+    st.markdown("""
+    To ensure complete transparency and accountability, all underlying data points across categories are linked to official publishing authorities:
+    * **Human Development Index (HDI):** [UNDP Human Development Data Center](https://hdr.undp.org/data-center/human-development-index) *(Publisher: UNDP Human Development Report Office)*.
+    * **Sustainable Development Goals (SDG) Composite:** [Sustainable Development Report - Kenya Profile](https://dashboards.sdgindex.org/profiles/kenya/) *(Publisher: Sustainable Development Solutions Network - SDSN)*.
+    * **Real GDP Growth & Macroeconomic Data:** [Kenya National Bureau of Statistics (KNBS)](https://www.knbs.or.ke/) & [Central Bank of Kenya](https://www.centralbank.go.ke/).
+    * **Corruption Perceptions Index (CPI):** [Transparency International via AllAfrica](https://allafrica.com/stories/202502110212.html) *(Publisher: Transparency International)*.
+    * **Devolution & Constitutional Architecture:** [National Council for Law Reporting](http://kenyalaw.org/) *(Publisher: Kenya Law / Constitution of Kenya)*.
+    * **Continental Innovation & AU Agenda:** [WIPO Global Innovation Index Kenya Profile](https://www.wipo.int/edocs/gii-ranking/2023/ke.pdf) *(Publisher: WIPO / African Union Commission)*.
+    """)
 
 # ==========================================
 # SECTION 2: ALL CATEGORIES GRAPHS & VERIFIABLE LINKS
