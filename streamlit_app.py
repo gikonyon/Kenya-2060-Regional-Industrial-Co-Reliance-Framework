@@ -1,9 +1,14 @@
+# 🇰🇪 Kenya 2060 All-Inclusive Development Framework
+
+```python
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import plotly.graph_objects as go
 
-# --- PAGE CONFIGURATION ---
+# ============================================================
+# PAGE CONFIGURATION
+# ============================================================
+
 st.set_page_config(
     page_title="Kenya 2060 Development Framework",
     page_icon="🇰🇪",
@@ -11,39 +16,377 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# --- HEADER & TITLE ---
+
+# ============================================================
+# HEADER
+# ============================================================
+
 st.title("🇰🇪 Kenya 2060 All-Inclusive Development Framework")
 st.markdown("### *One Kenya. Forty-Seven Contributors. Shared Prosperity.*")
+st.caption(
+    "An interactive policy, accountability and development architecture "
+    "for inclusive industrialization and shared prosperity."
+)
 st.markdown("---")
 
-# --- CACHED DATASETS FOR SCORECARDS & VERIFICATION ---
+
+# ============================================================
+# DATA INGESTION DATASET
+# ============================================================
+
 @st.cache_data
 def get_ingestion_dataset():
+    """
+    Kenya 2060 development dataset.
+
+    IMPORTANT DATA GOVERNANCE NOTE:
+    Historical observations, current estimates and future policy targets
+    are explicitly separated using the Data_Status column.
+    """
+
     data = {
-        "Year": [2004, 2007, 2010, 2013, 2018, 2020, 2023, 2026, 2030, 2045, 2060],
-        "Administration_Horizon": [
-            "Mwai Kibaki", "Mwai Kibaki", "Mwai Kibaki", 
-            "Uhuru Kenyatta", "Uhuru Kenyatta", "Uhuru Kenyatta", 
-            "William Ruto", "William Ruto", 
-            "Vision 2030 Milestone", "AU Agenda Horizon", "Kenya Vision 2060"
+        "Year": [
+            2004, 2007, 2010,
+            2013, 2018, 2020,
+            2023, 2026,
+            2030, 2045, 2060
         ],
-        "Real_GDP_Growth_Pct": [5.1, 7.0, 5.8, 5.9, 6.3, -0.3, 5.6, 5.3, 6.0, 7.2, 8.0],
-        "Industrialization_Share_Pct": [10.2, 10.8, 11.1, 11.5, 11.2, 10.5, 11.0, 11.4, 13.5, 16.0, 22.0],
-        "SDG_Composite_Score": [45.2, 48.1, 51.0, 53.5, 57.2, 58.1, 61.4, 63.5, 70.0, 85.0, 96.5],
-        "HDI_Score": [0.512, 0.535, 0.559, 0.575, 0.601, 0.611, 0.628, 0.640, 0.675, 0.730, 0.810],
+
+        "Administration_Horizon": [
+            "Mwai Kibaki",
+            "Mwai Kibaki",
+            "Mwai Kibaki",
+            "Uhuru Kenyatta",
+            "Uhuru Kenyatta",
+            "Uhuru Kenyatta",
+            "William Ruto",
+            "William Ruto",
+            "Vision 2030 Milestone",
+            "AU Agenda Horizon",
+            "Kenya Vision 2060"
+        ],
+
+        "Real_GDP_Growth_Pct": [
+            5.1, 7.0, 5.8,
+            5.9, 6.3, -0.3,
+            5.6, 5.3,
+            6.0, 7.2, 8.0
+        ],
+
+        "Industrialization_Share_Pct": [
+            10.2, 10.8, 11.1,
+            11.5, 11.2, 10.5,
+            11.0, 11.4,
+            13.5, 16.0, 22.0
+        ],
+
+        # Kenya 2060 framework composite indicator.
+        # Historical values should be replaced with a validated
+        # methodology if the platform is publicly deployed.
+        "SDG_Composite_Score": [
+            45.2, 48.1, 51.0,
+            53.5, 57.2, 58.1,
+            61.4, 63.5,
+            70.0, 85.0, 96.5
+        ],
+
+        "HDI_Score": [
+            0.512, 0.535, 0.559,
+            0.575, 0.601, 0.611,
+            0.628, 0.640,
+            0.675, 0.730, 0.810
+        ],
+
+        "Data_Status": [
+            "Historical / To Be Verified",
+            "Historical / To Be Verified",
+            "Historical / To Be Verified",
+            "Historical / To Be Verified",
+            "Historical / To Be Verified",
+            "Historical / To Be Verified",
+            "Historical / To Be Verified",
+            "Current Estimate / Scenario",
+            "Kenya 2060 Policy Target",
+            "Kenya 2060 Scenario Projection",
+            "Kenya 2060 Long-Term Target"
+        ],
+
         "Data_Source_Verification": [
-            "KNBS Economic Survey", "KNBS / UNDP HDR", "KNBS / World Bank Open Data",
-            "KNBS Statistical Abstract", "KNBS Economic Survey", "KNBS Macroeconomic Review",
-            "UNDP Global HDI Update", "KNBS Q1 Real GDP Release",
-            "Vision 2030 Mid-Term Plan", "AU Agenda 2045 Framework", "Kenya 2060 Sovereign Matrix"
+            "KNBS Economic Survey / World Bank",
+            "KNBS Economic Survey / World Bank",
+            "KNBS / UNDP Human Development Reports",
+            "KNBS Statistical Abstract",
+            "KNBS Economic Survey",
+            "KNBS Macroeconomic / Economic Survey",
+            "KNBS / UNDP / World Bank",
+            "Current estimate – update from official release",
+            "Vision 2030 / Kenya 2060 Policy Target",
+            "Kenya 2060 Scenario Projection",
+            "Kenya 2060 Long-Term Policy Target"
         ]
     }
+
     return pd.DataFrame(data)
+
 
 df_ingestion = get_ingestion_dataset()
 
-# --- SIDEBAR NAVIGATION ---
-st.sidebar.header("Navigation Menu")
+
+# ============================================================
+# PRESIDENTIAL SCORECARD HELPER FUNCTIONS
+# ============================================================
+
+def create_presidential_scorecard(data, administration_name):
+    """
+    Displays four headline development metrics for an administration.
+    """
+
+    if data.empty:
+        st.warning(
+            f"No data is currently available for {administration_name}."
+        )
+        return
+
+    latest = data.iloc[-1]
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    col1.metric(
+        "📈 Latest GDP Growth",
+        f"{latest['Real_GDP_Growth_Pct']:.1f}%"
+    )
+
+    col2.metric(
+        "🏭 Industrialization Share",
+        f"{latest['Industrialization_Share_Pct']:.1f}%"
+    )
+
+    col3.metric(
+        "👥 HDI Score",
+        f"{latest['HDI_Score']:.3f}"
+    )
+
+    col4.metric(
+        "🌍 SDG Framework Score",
+        f"{latest['SDG_Composite_Score']:.1f}/100"
+    )
+
+
+def create_presidential_graphs(data, administration_name):
+    """
+    Displays GDP, industrialization, HDI and SDG graphs directly
+    below the presidential scorecards.
+    """
+
+    if data.empty:
+        return
+
+    # --------------------------------------------------------
+    # GDP GROWTH GRAPH
+    # --------------------------------------------------------
+
+    st.subheader("📈 Economic Growth Performance")
+
+    fig_gdp = px.line(
+        data,
+        x="Year",
+        y="Real_GDP_Growth_Pct",
+        markers=True,
+        title=f"{administration_name}: Real GDP Growth Trajectory",
+        labels={
+            "Year": "Year",
+            "Real_GDP_Growth_Pct": "Real GDP Growth (%)"
+        },
+        hover_data=["Data_Status"]
+    )
+
+    fig_gdp.update_yaxes(ticksuffix="%")
+    fig_gdp.update_layout(height=420)
+
+    st.plotly_chart(fig_gdp, use_container_width=True)
+
+    # --------------------------------------------------------
+    # INDUSTRIALIZATION GRAPH
+    # --------------------------------------------------------
+
+    st.subheader("🏭 Industrialization & Value Addition")
+
+    fig_industry = px.bar(
+        data,
+        x="Year",
+        y="Industrialization_Share_Pct",
+        text="Industrialization_Share_Pct",
+        title=f"{administration_name}: Industrialization Share of GDP",
+        labels={
+            "Year": "Year",
+            "Industrialization_Share_Pct":
+                "Manufacturing / Industrial Share (%)"
+        },
+        hover_data=["Data_Status"]
+    )
+
+    fig_industry.update_traces(
+        texttemplate="%{text:.1f}%",
+        textposition="outside"
+    )
+
+    fig_industry.update_yaxes(ticksuffix="%")
+    fig_industry.update_layout(height=420)
+
+    st.plotly_chart(fig_industry, use_container_width=True)
+
+    # --------------------------------------------------------
+    # HDI GRAPH
+    # --------------------------------------------------------
+
+    st.subheader("👥 Human Development Progress")
+
+    fig_hdi = px.line(
+        data,
+        x="Year",
+        y="HDI_Score",
+        markers=True,
+        title=f"{administration_name}: Human Development Index Trend",
+        labels={
+            "Year": "Year",
+            "HDI_Score": "Human Development Index"
+        },
+        hover_data=["Data_Status"]
+    )
+
+    fig_hdi.update_layout(height=420)
+
+    st.plotly_chart(fig_hdi, use_container_width=True)
+
+    # --------------------------------------------------------
+    # SDG SCORE GRAPH
+    # --------------------------------------------------------
+
+    st.subheader("🌍 Sustainable Development Goals Progress")
+
+    fig_sdg = px.area(
+        data,
+        x="Year",
+        y="SDG_Composite_Score",
+        title=f"{administration_name}: SDG Framework Progress Score",
+        labels={
+            "Year": "Year",
+            "SDG_Composite_Score": "SDG Framework Score (0–100)"
+        },
+        hover_data=["Data_Status"]
+    )
+
+    fig_sdg.update_yaxes(range=[0, 100])
+    fig_sdg.update_layout(height=420)
+
+    st.plotly_chart(fig_sdg, use_container_width=True)
+
+
+def display_scorecard_table(data):
+    """
+    Displays the underlying data used to generate scorecards and graphs.
+    """
+
+    if data.empty:
+        st.warning("No underlying data available.")
+        return
+
+    display_columns = [
+        "Year",
+        "Administration_Horizon",
+        "Real_GDP_Growth_Pct",
+        "Industrialization_Share_Pct",
+        "HDI_Score",
+        "SDG_Composite_Score",
+        "Data_Status",
+        "Data_Source_Verification"
+    ]
+
+    st.dataframe(
+        data[display_columns],
+        use_container_width=True,
+        hide_index=True
+    )
+
+
+def display_validated_sources():
+    """
+    Displays the official source registry used for peer verification.
+    """
+
+    st.markdown("---")
+    st.subheader("🔗 Validated Data Sources & Citation Registry")
+
+    st.markdown("""
+### 🇰🇪 Kenya National Bureau of Statistics (KNBS)
+
+Kenya's principal source for official economic, demographic and sectoral
+statistics.
+
+- **KNBS Official Website:** https://www.knbs.or.ke/
+- **Economic Surveys:** https://www.knbs.or.ke/
+- **Official Statistics & Reports:** https://www.knbs.or.ke/
+
+**Key indicators:** GDP growth, sector performance, manufacturing,
+employment and national socio-economic statistics.
+
+---
+
+### 🌐 World Bank Open Data
+
+Internationally comparable development and macroeconomic indicators.
+
+- **Kenya Data Profile:** https://data.worldbank.org/country/kenya
+- **GDP Growth Indicator:** https://data.worldbank.org/indicator/NY.GDP.MKTP.KD.ZG?locations=KE
+
+**Key indicators:** GDP growth, poverty, population, investment and
+international development comparisons.
+
+---
+
+### 🇺🇳 UNDP Human Development Reports
+
+The authoritative international source for Human Development Index data.
+
+- **UNDP Human Development Data Center:** https://hdr.undp.org/data-center
+- **UNDP Global Data Platform:** https://data.undp.org/
+
+**Key indicators:** Human Development Index, education, life expectancy
+and income dimensions.
+
+---
+
+### 🌍 Sustainable Development Goals – Kenya
+
+Official national SDG reporting should be used to validate individual
+SDG indicators.
+
+- **KNBS Official Portal:** https://www.knbs.or.ke/
+- **United Nations SDG Data:** https://unstats.un.org/sdgs/dataportal/
+
+**Methodology Notice:** The Kenya 2060 SDG Composite Score is a framework
+indicator unless a published methodology, component indicators and weights
+are formally adopted and independently validated.
+
+---
+
+### 🏦 Central Bank of Kenya (CBK)
+
+Official monetary, financial and macro-financial information.
+
+- **CBK Official Website:** https://www.centralbank.go.ke/
+
+**Key indicators:** Inflation, exchange rates, reserves and financial
+sector conditions.
+""")
+
+
+# ============================================================
+# SIDEBAR NAVIGATION
+# ============================================================
+
+st.sidebar.header("🇰🇪 Navigation Menu")
+
 app_mode = st.sidebar.selectbox(
     "Choose Section",
     [
@@ -58,306 +401,726 @@ app_mode = st.sidebar.selectbox(
     ]
 )
 
-# --- SECTION 1: EXECUTIVE SUMMARY ---
+
+# ============================================================
+# SECTION 1: EXECUTIVE SUMMARY
+# ============================================================
+
 if app_mode == "Executive Summary & Vision":
+
     st.header("1. Executive Summary and National Context")
+
     st.write("""
-    Kenya possesses a young population, a strategic geographical location, a devolved system of government, 
-    and rich resources. However, economic opportunity, industrial development, and quality public services 
-    remain unevenly distributed. 
-    
-    The **Kenya 2060 All-Inclusive Development Framework** presents a long-term model organizing all 47 counties 
-    into nine functional economic regions. Moving away from raw-material dependency, the framework anchors 
-    itself on domestic value addition, county-based industrial specialization, regional co-reliance, and rigorous 
-    public accountability.
+    Kenya possesses a young population, a strategic geographical location,
+    a devolved system of government, and rich natural and human resources.
+    However, economic opportunity, industrial development and quality public
+    services remain unevenly distributed.
+
+    The **Kenya 2060 All-Inclusive Development Framework** presents a
+    long-term model organizing all 47 counties into nine functional economic
+    regions. Moving away from raw-material dependency, the framework anchors
+    itself on domestic value addition, county-based industrial specialization,
+    regional co-reliance and rigorous public accountability.
     """)
-    
+
     col1, col2, col3 = st.columns(3)
-    col1.metric("Functional Regions", "9 Zones", "All 47 Counties")
-    col2.metric("Target Initial Jobs", "500,000+", "Direct & Supportive")
-    col3.metric("Core Vision Year", "2060", "Mature Innovation Economy")
 
-# --- SECTION 2: CONSTITUTIONAL ALIGNMENT ---
+    col1.metric(
+        "Functional Regions",
+        "9 Zones",
+        "All 47 Counties"
+    )
+
+    col2.metric(
+        "Target Initial Jobs",
+        "500,000+",
+        "Direct & Supportive"
+    )
+
+    col3.metric(
+        "Core Vision Year",
+        "2060",
+        "Mature Innovation Economy"
+    )
+
+    st.markdown("---")
+
+    st.subheader("🎯 The Kenya 2060 Development Principle")
+
+    st.success("""
+    **Every county contributes. Every region produces. Every Kenyan
+    participates in shared prosperity.**
+    """)
+
+
+# ============================================================
+# SECTION 2: CONSTITUTIONAL ALIGNMENT
+# ============================================================
+
 elif app_mode == "Constitutional Alignment & Governance":
-    st.header("2. Constitutional Alignment & Bulletproof Governance")
-    st.write("""
-    To prevent the legal vulnerabilities and court injunctions that have historically stalled major national infrastructure 
-    projects, this proposal is explicitly preemptive and compliant with the **Constitution of Kenya (2010)**.
-    """)
-    
-    st.info("💡 **Why projects won't stall in court:** By embedding mandatory public participation at the county level and strict adherence to public finance laws from day one, public trust is secured and legal challenges are eliminated.")
-    
-    tab1, tab2, tab3 = st.tabs(["Article 10 (Inclusiveness)", "Article 201 (Public Finance)", "Chapter 11 (Devolution)"])
-    
-    with tab1:
-        st.subheader("National Values & Principles (Article 10)")
-        st.write("Binds state organs to patriotism, national unity, and social justice. The framework eliminates regional marginalization by assigning clear productive economic mandates to every county.")
-        
-    with tab2:
-        st.subheader("Principles of Public Finance (Article 201)")
-        st.write("Mandates prudent, responsible use of public money. Capital expenditure must promote equitable development without creating idle assets or wasteful debt.")
-        
-    with tab3:
-        st.subheader("Objects of Devolution (Articles 174 & 175)")
-        st.write("Empowers county governments to drive local economic development and revenue generation rather than relying exclusively on shared revenue transfers.")
 
-# --- SECTION 3: GLOBAL BENCHMARKING ---
-elif app_mode == "Global Benchmarking (Morocco & China vs. Kenya)":
-    st.header("3. Comparative Growth Models: Learning from Global Success")
+    st.header("2. Constitutional Alignment & Resilient Governance")
+
     st.write("""
-    The framework borrows structural lessons from **Morocco (Tanger Med Integration)** and **China (Export-Led Growth & Spatial Sequencing)**, 
-    integrated directly with national infrastructure and asset monetization visions.
+    The Kenya 2060 Framework is designed to reduce legal and implementation
+    risks by embedding constitutional compliance, meaningful public
+    participation, transparent public finance and devolved development
+    principles from the earliest stages of project design.
     """)
-    
+
+    st.info("""
+    💡 **Governance Principle:** Constitutional compliance and meaningful
+    public participation cannot guarantee the absence of legal challenges,
+    but they can significantly strengthen legitimacy, accountability and
+    implementation resilience.
+    """)
+
+    tab1, tab2, tab3 = st.tabs([
+        "Article 10 (Inclusiveness)",
+        "Article 201 (Public Finance)",
+        "Chapter 11 (Devolution)"
+    ])
+
+    with tab1:
+
+        st.subheader("National Values & Principles")
+
+        st.write("""
+        The framework promotes national unity, inclusiveness, social justice
+        and equitable opportunity by ensuring that every county has a
+        meaningful productive role within the national economy.
+        """)
+
+    with tab2:
+
+        st.subheader("Principles of Public Finance")
+
+        st.write("""
+        Capital expenditure should promote equitable development and
+        productive capacity while avoiding idle assets, inefficient projects
+        and unsustainable public financial obligations.
+        """)
+
+    with tab3:
+
+        st.subheader("Objects of Devolution")
+
+        st.write("""
+        County governments are positioned as active development partners,
+        enabling locally appropriate economic development and strengthening
+        productive capacity across all regions.
+        """)
+
+
+# ============================================================
+# SECTION 3: GLOBAL BENCHMARKING
+# ============================================================
+
+elif app_mode == "Global Benchmarking (Morocco & China vs. Kenya)":
+
+    st.header("3. Comparative Growth Models: Learning from Global Success")
+
+    st.write("""
+    The framework draws structural lessons from international development
+    experiences, including Morocco's industrial-logistics integration and
+    China's spatial and export-oriented industrial development.
+    """)
+
     comparison_data = {
         "Strategic Dimension": [
             "Infrastructure Philosophy",
             "Spatial & Regional Sequencing",
-            "Legal & Governance Protection",
+            "Governance & Long-Term Planning",
             "Industrial Integration"
         ],
+
         "China Model": [
-            "Massive capital into transport and SEZs tied to global supply chains.",
-            "Gradient Theory ('Flying Geese') cascading investment from coast inward.",
-            "Top-down unitary execution with minimal judicial friction.",
-            "Strict coupling of infrastructure to manufacturing."
+            "Large-scale investment in transport and industrial zones linked to supply chains.",
+            "Spatial sequencing and gradual expansion of industrial development.",
+            "Long-term strategic planning and coordinated implementation.",
+            "Strong linkage between infrastructure and productive manufacturing."
         ],
+
         "Morocco (Tanger Med)": [
-            "Mega-ports interlinked directly with free-zone industrial platforms.",
-            "Targeted maritime gateways scaled outward to regional plans.",
-            "Royal long-term strategy backed by autonomous specialized agencies.",
-            "High integration rates (e.g., automotive/aerospace clusters)."
+            "Ports integrated with industrial and logistics platforms.",
+            "Strategic gateways connected to regional economic development.",
+            "Specialized institutions supporting long-term industrial development.",
+            "Integration of automotive, aerospace and export-oriented clusters."
         ],
+
         "Kenya 2060 Proposal": [
-            "**Infrastructure-to-Industry Mandate**: Outlaws standalone civil works.",
-            "**9-Region Architecture**: Simultaneous county specialization from day one.",
-            "**Constitutional Anchoring**: Preempts court delays via Article 10 & public participation.",
-            "**Pre-committed Offtake**: Every shilling unlocks measurable export readiness."
+            "Infrastructure-to-Industry Mandate linking assets to productive demand.",
+            "Nine functional regions supporting simultaneous national specialization.",
+            "Constitutional alignment, participation and transparent accountability.",
+            "Pre-planned value chains and export readiness."
         ]
     }
-    
-    df_comp = pd.DataFrame(comparison_data)
-    st.dataframe(df_comp, use_container_width=True)
 
-# --- SECTION 4: 9-REGION ARCHITECTURE ---
+    df_comp = pd.DataFrame(comparison_data)
+
+    st.dataframe(
+        df_comp,
+        use_container_width=True,
+        hide_index=True
+    )
+
+
+# ============================================================
+# SECTION 4: 9-REGION ARCHITECTURE
+# ============================================================
+
 elif app_mode == "9-Region & 47-County Architecture":
+
     st.header("4. Nine-Region, Forty-Seven-County Economic Architecture")
-    st.write("Every community contributes a specialized economic pillar to the national fabric with dedicated county inputs:")
-    
+
+    st.write("""
+    Every community contributes a specialized economic pillar to the national
+    fabric. The objective is regional co-reliance rather than competition
+    between counties.
+    """)
+
     regions_detailed = {
+
         "Nairobi Region": {
             "Counties": ["Nairobi City"],
-            "Core Mandate": "Financial, technology, AI, big data, and diplomatic headquarters.",
-            "Industrial Focus": "Fintech hubs, software engineering parks, digital service delivery, global business process outsourcing (BPO), and capital markets."
+            "Core Mandate":
+                "Financial, technology, AI, big data and diplomatic headquarters.",
+            "Industrial Focus":
+                "Fintech, software engineering, digital services, BPO and capital markets."
         },
+
         "Central Region": {
-            "Counties": ["Kiambu", "Murang'a", "Nyeri", "Kirinyaga", "Nyandarua"],
-            "Core Mandate": "Coffee/tea processing, blending, and high-value agro-exports.",
-            "Industrial Focus": "Value-addition factories for coffee/tea packaging, horticulture cold chains, leather processing, and light manufacturing clusters."
+            "Counties": [
+                "Kiambu", "Murang'a", "Nyeri",
+                "Kirinyaga", "Nyandarua"
+            ],
+            "Core Mandate":
+                "Coffee, tea processing and high-value agro-exports.",
+            "Industrial Focus":
+                "Value addition, packaging, cold chains, leather processing and light manufacturing."
         },
+
         "Western Region": {
-            "Counties": ["Kakamega", "Vihiga", "Bungoma", "Busia"],
-            "Core Mandate": "Sugar processing, agro-processing, and cross-border supply chain integration.",
-            "Industrial Focus": "Sugar mill modernization, cogeneration of power from bagasse, grain milling, and cross-border trade facilitation."
+            "Counties": [
+                "Kakamega", "Vihiga",
+                "Bungoma", "Busia"
+            ],
+            "Core Mandate":
+                "Sugar processing, agro-processing and cross-border trade.",
+            "Industrial Focus":
+                "Sugar modernization, bagasse energy, grain processing and trade logistics."
         },
+
         "Nyanza Region": {
-            "Counties": ["Kisumu", "Siaya", "Homa Bay", "Migori", "Kisii", "Nyamira"],
-            "Core Mandate": "Lake logistics, port/SEZ development, fisheries, and regional trade.",
-            "Industrial Focus": "Inland port logistics at Kisumu, fish processing plants, cotton ginneries revival, and aquaculture zones."
+            "Counties": [
+                "Kisumu", "Siaya", "Homa Bay",
+                "Migori", "Kisii", "Nyamira"
+            ],
+            "Core Mandate":
+                "Lake logistics, fisheries and regional trade.",
+            "Industrial Focus":
+                "Inland logistics, fish processing, cotton value chains and aquaculture."
         },
+
         "North Rift Region": {
-            "Counties": ["Uasin Gishu", "Trans Nzoia", "Nandi", "Elgeyo Marakwet", "West Pokot", "Turkana"],
-            "Core Mandate": "National food security, grain production, livestock, and transport corridors.",
-            "Industrial Focus": "Grain silos and bulk handling facilities, agricultural machinery assembly, renewable energy development (geothermal/wind), and oil/mineral logistics."
+            "Counties": [
+                "Uasin Gishu", "Trans Nzoia", "Nandi",
+                "Elgeyo Marakwet", "West Pokot", "Turkana"
+            ],
+            "Core Mandate":
+                "Food security, livestock and strategic transport corridors.",
+            "Industrial Focus":
+                "Grain handling, agricultural machinery, renewable energy and resource logistics."
         },
+
         "South Rift Region": {
-            "Counties": ["Nakuru", "Kericho", "Bomet", "Narok", "Kajiado"],
-            "Core Mandate": "Tea, dairy, tourism, and integrated livestock value chains.",
-            "Industrial Focus": "Dairy processing hubs, geothermal-powered industrial parks (Naivasha SEZ), high-end eco-tourism infrastructure, and leather value chains."
+            "Counties": [
+                "Nakuru", "Kericho", "Bomet",
+                "Narok", "Kajiado"
+            ],
+            "Core Mandate":
+                "Tea, dairy, tourism and livestock value chains.",
+            "Industrial Focus":
+                "Dairy processing, geothermal industrial development, tourism and leather."
         },
+
         "Eastern Region": {
-            "Counties": ["Machakos", "Kitui", "Makueni", "Embu", "Meru", "Tharaka Nithi", "Isiolo"],
-            "Core Mandate": "Dryland innovation, livestock, agro-processing, and gateway infrastructure.",
-            "Industrial Focus": "Mango and citrus processing plants, Isiolo resort city logistics hub, leather and meat processing, and green energy solar parks."
+            "Counties": [
+                "Machakos", "Kitui", "Makueni",
+                "Embu", "Meru", "Tharaka Nithi", "Isiolo"
+            ],
+            "Core Mandate":
+                "Dryland innovation, livestock, agro-processing and gateway infrastructure.",
+            "Industrial Focus":
+                "Fruit processing, logistics, meat processing and renewable energy."
         },
+
         "North Eastern Region": {
-            "Counties": ["Garissa", "Wajir", "Mandera"],
-            "Core Mandate": "Cross-border livestock commerce and integrated trade logistics.",
-            "Industrial Focus": "Modern export-oriented abattoirs, hides and skins tanneries, solar energy generation, and livestock disease-free zones."
+            "Counties": [
+                "Garissa", "Wajir", "Mandera"
+            ],
+            "Core Mandate":
+                "Cross-border livestock commerce and trade logistics.",
+            "Industrial Focus":
+                "Export-oriented abattoirs, hides and skins, solar energy and livestock systems."
         },
+
         "Coast Region": {
-            "Counties": ["Mombasa", "Kwale", "Kilifi", "Tana River", "Lamu", "Taita Taveta"],
-            "Core Mandate": "Maritime gateway, ports, logistics, and international trade corridors.",
-            "Industrial Focus": "Port of Mombasa and Lamu Port (LAPSSET) corridor logistics, ship repair yards, maritime fisheries processing, and coastal tourism modernization."
+            "Counties": [
+                "Mombasa", "Kwale", "Kilifi",
+                "Tana River", "Lamu", "Taita Taveta"
+            ],
+            "Core Mandate":
+                "Maritime gateway, logistics and international trade.",
+            "Industrial Focus":
+                "Ports, maritime logistics, ship repair, fisheries processing and tourism."
         }
     }
-    
-    selected_region = st.selectbox("Select Economic Region to Inspect", list(regions_detailed.keys()))
+
+    selected_region = st.selectbox(
+        "Select Economic Region to Inspect",
+        list(regions_detailed.keys())
+    )
+
     reg_data = regions_detailed[selected_region]
-    
-    st.success(f"**Core Mandate for {selected_region}**: {reg_data['Core Mandate']}")
-    
+
+    st.success(
+        f"**Core Mandate for {selected_region}:** "
+        f"{reg_data['Core Mandate']}"
+    )
+
     col_a, col_b = st.columns(2)
+
     with col_a:
+
         st.subheader("🏛️ Constituent Counties")
+
         for county in reg_data["Counties"]:
             st.markdown(f"- {county}")
-            
+
     with col_b:
+
         st.subheader("🏭 Industrial Specialization & Focus")
+
         st.write(reg_data["Industrial Focus"])
 
-# --- SECTION 5: VISUALIZED SCORECARDS ---
+
+# ============================================================
+# SECTION 5: NATIONAL VISUALIZED SCORECARDS
+# ============================================================
+
 elif app_mode == "Visualized Scorecards & Multi-Dimensional Metrics":
-    st.header("5. Visualized National Scorecards (2004–2060)")
-    st.write("""
-    Interactive graphical representations tracking Kenya's **Economic Growth (Real GDP %)**, **Industrialization Contribution (Manufacturing Share of GDP %)**, 
-    and **Sustainable Development Goals (SDG Composite Progress Index)** across presidential administrations and future milestone horizons.
+
+    st.header("5. Visualized National Scorecards & Multi-Dimensional Metrics")
+
+    st.info("""
+    Historical observations and future policy targets are shown together
+    for strategic visualization. Future values should not be interpreted as
+    verified historical outcomes.
     """)
-    
-    # Chart 1: Economic Growth Scorecard
-    st.subheader("📈 1. Economic Growth Scorecard (Real GDP Growth %)")
-    fig_gdp = px.bar(
-        df_ingestion, 
-        x="Year", 
-        y="Real_GDP_Growth_Pct", 
+
+    st.subheader("📈 1. Economic Growth Scorecard")
+
+    fig_gdp = px.line(
+        df_ingestion,
+        x="Year",
+        y="Real_GDP_Growth_Pct",
         color="Administration_Horizon",
-        text="Real_GDP_Growth_Pct",
-        labels={"Real_GDP_Growth_Pct": "Real GDP Growth (%)", "Year": "Timeline"},
-        title="Historical & Projected Real GDP Growth Trajectory (2004–2060)"
-    )
-    fig_gdp.update_traces(texttemplate='%{text}%', textposition='outside')
-    fig_gdp.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
-    st.plotly_chart(fig_gdp, use_container_width=True)
-    
-    # Chart 2: Industrialization Scorecard
-    st.subheader("🏭 2. Industrialization Scorecard (Manufacturing Share of GDP %)")
-    fig_ind = px.line(
-        df_ingestion, 
-        x="Year", 
-        y="Industrialization_Share_Pct", 
         markers=True,
-        color="Administration_Horizon",
-        labels={"Industrialization_Share_Pct": "Manufacturing Share of GDP (%)", "Year": "Timeline"},
-        title="Industrial Value-Addition Share Trajectory toward Vision 2060"
+        title="Historical and Kenya 2060 GDP Growth Trajectory",
+        hover_data=["Data_Status"]
     )
-    fig_ind.update_traces(line=dict(width=3), marker=dict(size=10))
+
+    fig_gdp.update_yaxes(ticksuffix="%")
+
+    st.plotly_chart(fig_gdp, use_container_width=True)
+
+    st.subheader("🏭 2. Industrialization Scorecard")
+
+    fig_ind = px.line(
+        df_ingestion,
+        x="Year",
+        y="Industrialization_Share_Pct",
+        markers=True,
+        title="Industrial Value-Addition Trajectory Toward Kenya 2060",
+        hover_data=["Data_Status"]
+    )
+
+    fig_ind.update_yaxes(ticksuffix="%")
+
     st.plotly_chart(fig_ind, use_container_width=True)
-    
-    # Chart 3: SDG Composite Scorecard
-    st.subheader("🌍 3. Sustainable Development Goals (SDG) Composite Index Scorecard")
+
+    st.subheader("👥 3. Human Development Scorecard")
+
+    fig_hdi = px.line(
+        df_ingestion,
+        x="Year",
+        y="HDI_Score",
+        markers=True,
+        title="Human Development Index Trajectory",
+        hover_data=["Data_Status"]
+    )
+
+    st.plotly_chart(fig_hdi, use_container_width=True)
+
+    st.subheader("🌍 4. SDG Framework Scorecard")
+
     fig_sdg = px.area(
-        df_ingestion, 
-        x="Year", 
+        df_ingestion,
+        x="Year",
         y="SDG_Composite_Score",
-        labels={"SDG_Composite_Score": "SDG Composite Index (0-100)", "Year": "Timeline"},
-        title="National SDG Composite Achievement Tracking & Targets"
+        title="Kenya 2060 Sustainable Development Progress Framework",
+        hover_data=["Data_Status"]
     )
-    fig_sdg.update_traces(line_color="#00CC96", fillcolor="rgba(0, 204, 150, 0.3)")
+
+    fig_sdg.update_yaxes(range=[0, 100])
+
     st.plotly_chart(fig_sdg, use_container_width=True)
-    
-    st.markdown("---")
-    st.info("💡 **Verification Note:** All metric points are mapped directly to official data ingestion pipelines from KNBS, Central Bank of Kenya, and UNDP statistical reports.")
 
-# --- SECTION 6: PRESIDENTIAL SCORECARDS & STRATEGIC HORIZONS ---
+
+# ============================================================
+# SECTION 6: PRESIDENTIAL SCORECARDS
+# ============================================================
+
 elif app_mode == "Presidential Scorecards & Strategic Horizons (2004–2060)":
-    st.header("6. Presidential Performance Scorecards & Strategic Horizons (2004–2060)")
-    st.write("""
-    Evaluating national progress requires reviewing historical leadership outcomes from 2004 onward using validated 
-    **Human Development Index (HDI)** data curves and **Sustainable Development Goals (SDGs)**, bridging Vision 2030 
-    toward the Africa Union Agenda 2045 and Kenya Vision 2060.
-    """)
-    
-    tab_kibaki, tab_uhuru, tab_ruto, tab_horizons = st.tabs([
-        "Mwai Kibaki (2003–2013)", 
-        "Uhuru Kenyatta (2013–2022)", 
-        "William Ruto (2022–2027+)", 
-        "Strategic Horizons (Short to 2060)"
-    ])
-    
-    with tab_kibaki:
-        st.subheader("President Mwai Kibaki Administration Scorecard")
-        st.markdown("""
-        * **Macroeconomic & Social Successes:** Resurrected economic growth from near-stagnation (~0.6% in 2002) to over 7% by 2007; introduced Free Primary Education (boosting Education Index under HDI); laid foundational digital infrastructure (TEAMS/SEACOM fiber cables) and launched Vision 2030.
-        * **Structural Failures & Gaps:** Persistent regional wealth disparities and underinvestment in Arid and Semi-Arid Lands (ASAL), leaving structural inequality unaddressed.
-        * **Empirical HDI / SDG Mapping:** High performance on SDG 4 (Quality Education) and SDG 8 (Decent Work & Economic Growth); lagging on SDG 10 (Reduced Inequalities).
-        """)
-        
-    with tab_uhuru:
-        st.subheader("President Uhuru Kenyatta Administration Scorecard")
-        st.markdown("""
-        * **Macroeconomic & Social Successes:** Delivered massive physical infrastructure (Standard Gauge Railway, major arterial highways, port expansions); successfully embedded devolution under Chapter 11; scaled digital government services (eCitizen).
-        * **Structural Failures & Gaps:** Accumulated extensive commercial foreign debt creating severe debt-servicing pressures; manufacturing contribution to GDP fell short of the 15% Big Four target.
-        * **Empirical HDI / SDG Mapping:** High on SDG 9 (Industry, Innovation, and Infrastructure); challenged on SDG 8 due to public debt burdens.
-        """)
-        
-    with tab_ruto:
-        st.subheader("President William Ruto Administration Scorecard & 2027 Targets")
-        st.markdown("""
-        * **Macroeconomic & Social Successes:** Deepened financial inclusion and digital credit access (Hustler Fund); scaled electronic voucher systems for agricultural inputs; expanded external labor markets and restructured Universal Health Coverage (SHA).
-        * **Structural Failures & Resistance:** Aggressive revenue mobilization and heavy taxation measures sparked severe public friction, dampening short-term consumer purchasing power and straining MSMEs.
-        * **Realistic 2027 Targets:** Single-digit inflation normalization, completion of devolved digital hubs, and transition toward private-public partnerships (PPPs) to ease fiscal deficits.
-        * **Empirical HDI / SDG Mapping:** Strong focus on SDG 17 (Partnerships for the Goals); heavily tested on SDG 1 (No Poverty) and SDG 2 (Zero Hunger).
-        """)
-        
-    with tab_horizons:
-        st.subheader("Temporal Horizons: Short-Term, Mid-Term (AU Agenda 2045), and Long-Term (Vision 2060)")
-        st.markdown("""
-        * **Short-Term Goals (2026–2027):** Fiscal stabilization, inflation control, completing stalled county projects, and protecting household purchasing power.
-        * **Mid-Term Goals (Aligning with AU Agenda 2045):** Deepening African Continental Free Trade Area (AfCFTA) integration, transitioning Kenya's 9 economic regions to value-added regional manufacturing, and moving into the High Human Development HDI bracket (0.700+).
-        * **Long-Term Goals (Kenya Vision 2060):** Achieving a fully mature, climate-resilient, knowledge-based economy driven by green technology, advanced artificial intelligence, biotechnology, and equitable regional co-reliance.
-        """)
 
-# --- SECTION 7: DATA INGESTION & PEER VERIFICATION PORTAL ---
-elif app_mode == "Data Ingestion & Peer Verification Portal":
-    st.header("7. Data Ingestion & Peer Verification Portal")
+    st.header("6. Presidential Performance Scorecards & Strategic Horizons")
+
     st.write("""
-    This portal provides transparent, empirical datasets mapping Kenya's economic growth, industrialization share, 
-    and **Human Development Index (HDI)** trajectory from 2004 to the 2060 target horizons. Peers and stakeholders can inspect, validate, and download the underlying CSV audit trail.
-    """)
-    
-    st.subheader("📊 Empirically Ingested Macro, Industrial & SDG Time-Series (2004–2060)")
-    st.dataframe(df_ingestion, use_container_width=True)
-    
-    # Download Button for CSV Audit File
-    csv_bytes = df_ingestion.to_csv(index=False).encode('utf-8')
-    st.download_button(
-        label="📥 Download Ingestion Audit Dataset (.CSV)",
-        data=csv_bytes,
-        file_name="kenya_2060_ingestion_audit_2004_2060.csv",
-        mime="text/csv",
-        help="Click to download the full verified time-series dataset for offline statistical analysis."
-    )
-    
-    st.markdown("---")
-    st.subheader("🔗 Verified Data Sources & Citation Registry")
-    st.markdown("""
-    * **Kenya National Bureau of Statistics (KNBS):** [knbs.or.ke](https://www.knbs.or.ke/) – *Quarterly GDP Reports, Economic Surveys, & Manufacturing Share Statistics.*
-    * **UNDP Human Development Reports:** [hdr.undp.org](https://hdr.undp.org/data-center) – *Historical Human Development Index (HDI) data and global benchmarks.*
-    * **World Bank Open Data (Kenya):** [data.worldbank.org/country/kenya](https://data.worldbank.org/country/kenya) – *Socio-economic time-series and debt indicators.*
-    * **Central Bank of Kenya (CBK):** [centralbank.go.ke](https://www.centralbank.go.ke/) – *Financial sector & foreign exchange reserve baselines.*
-    * **Kenya Vision 2060 Repository:** Official open-access policy modeling repository under Git version control.
+    Each administration is assessed using four development dimensions:
+    **Economic Growth, Industrialization, Human Development and Sustainable
+    Development Progress**. The scorecards are followed directly by graphs,
+    underlying tables and source verification information.
     """)
 
-# --- SECTION 8: INFRASTRUCTURE MANDATE ---
-elif app_mode == "Infrastructure-to-Industry Mandate":
-    st.header("8. Infrastructure-to-Industry Co-Investment Mandate")
-    st.write("""
-    To ensure public resources are never wasted on idle assets (avoiding historical mistakes seen in uncoordinated global projects), 
-    the proposal mandates strict interlinkage:
-    """)
-    
     st.warning("""
-    🛑 **The Anti-Waste Rule:** 
-    Drawing from Morocco's Tanger Med model, all major infrastructure (rail, ports, special economic zones) 
-    must be strictly interlinked with pre-committed industrial growth, private sector demand, and active value-chains before ground breaks.
-    """)
-    
-    st.markdown("""
-    * **No Speculative Civil Works:** Capital expenditure must unlock measurable, localized productive capacity.
-    * **Constitutional Compliance:** Direct fulfillment of Article 201 mandates for prudent and responsible management of public funds.
+    **Methodology Notice:** Presidential performance cannot be attributed
+    exclusively to one administration because development outcomes are
+    influenced by global conditions, institutions, policies and long-term
+    investments. The scorecards should therefore be interpreted as
+    descriptive development indicators rather than absolute causal rankings.
     """)
 
-# --- FOOTER ---
+    tab_kibaki, tab_uhuru, tab_ruto, tab_horizons = st.tabs([
+        "Mwai Kibaki (2003–2013)",
+        "Uhuru Kenyatta (2013–2022)",
+        "William Ruto (2022–Present)",
+        "Strategic Horizons (2026–2060)"
+    ])
+
+
+    # --------------------------------------------------------
+    # MWAI KIBAKI
+    # --------------------------------------------------------
+
+    with tab_kibaki:
+
+        st.subheader("🇰🇪 President Mwai Kibaki Administration")
+
+        st.markdown("""
+        **Development Context**
+
+        - Economic recovery and expansion during the Economic Recovery Strategy period.
+        - Expansion of education and social services.
+        - Launch of Kenya Vision 2030.
+        - Investment in infrastructure and national connectivity.
+
+        **Long-Term Development Challenge**
+
+        Economic growth and infrastructure development continued alongside
+        persistent regional and social inequalities requiring sustained
+        attention under subsequent administrations.
+        """)
+
+        kibaki_data = df_ingestion[
+            df_ingestion["Year"].between(2004, 2012)
+        ].copy()
+
+        st.markdown("### 📊 Presidential Development Scorecard")
+
+        create_presidential_scorecard(
+            kibaki_data,
+            "Mwai Kibaki Administration"
+        )
+
+        st.markdown("---")
+        st.markdown("## 📈 Development Graphs")
+
+        create_presidential_graphs(
+            kibaki_data,
+            "Mwai Kibaki Administration"
+        )
+
+        st.markdown("## 📋 Underlying Data Table")
+
+        display_scorecard_table(kibaki_data)
+
+
+    # --------------------------------------------------------
+    # UHURU KENYATTA
+    # --------------------------------------------------------
+
+    with tab_uhuru:
+
+        st.subheader("🇰🇪 President Uhuru Kenyatta Administration")
+
+        st.markdown("""
+        **Development Context**
+
+        - Expansion of transport, logistics and energy infrastructure.
+        - Consolidation of Kenya's devolved governance system.
+        - Expansion of digital government services.
+        - Increased regional and international connectivity.
+
+        **Long-Term Development Challenge**
+
+        Public debt sustainability and the relationship between infrastructure
+        investment and industrial productivity remain important areas for
+        long-term policy assessment.
+        """)
+
+        uhuru_data = df_ingestion[
+            df_ingestion["Year"].between(2013, 2022)
+        ].copy()
+
+        st.markdown("### 📊 Presidential Development Scorecard")
+
+        create_presidential_scorecard(
+            uhuru_data,
+            "Uhuru Kenyatta Administration"
+        )
+
+        st.markdown("---")
+        st.markdown("## 📈 Development Graphs")
+
+        create_presidential_graphs(
+            uhuru_data,
+            "Uhuru Kenyatta Administration"
+        )
+
+        st.markdown("## 📋 Underlying Data Table")
+
+        display_scorecard_table(uhuru_data)
+
+
+    # --------------------------------------------------------
+    # WILLIAM RUTO
+    # --------------------------------------------------------
+
+    with tab_ruto:
+
+        st.subheader("🇰🇪 President William Ruto Administration")
+
+        st.markdown("""
+        **Development Context**
+
+        - Agricultural productivity and digital transformation initiatives.
+        - Health-sector reforms and Universal Health Coverage implementation.
+        - Financial inclusion and employment programmes.
+        - Increased emphasis on public-private partnerships.
+
+        **Current Development Challenge**
+
+        Fiscal consolidation, household purchasing power, taxation and
+        employment creation remain central indicators for continued
+        public policy monitoring.
+        """)
+
+        ruto_data = df_ingestion[
+            df_ingestion["Year"].between(2023, 2026)
+        ].copy()
+
+        st.markdown("### 📊 Presidential Development Scorecard")
+
+        create_presidential_scorecard(
+            ruto_data,
+            "William Ruto Administration"
+        )
+
+        st.markdown("---")
+        st.markdown("## 📈 Development Graphs")
+
+        create_presidential_graphs(
+            ruto_data,
+            "William Ruto Administration"
+        )
+
+        st.markdown("## 📋 Underlying Data Table")
+
+        display_scorecard_table(ruto_data)
+
+
+    # --------------------------------------------------------
+    # STRATEGIC HORIZONS
+    # --------------------------------------------------------
+
+    with tab_horizons:
+
+        st.subheader("🎯 Kenya 2060 Strategic Development Horizons")
+
+        st.markdown("""
+        | Horizon | Period | Strategic Objective |
+        |---|---|---|
+        | Short-Term | 2026–2030 | Fiscal stabilization and inclusive productivity |
+        | Medium-Term | 2030–2045 | Regional industrial integration and human development |
+        | Long-Term | 2045–2060 | Knowledge-based and climate-resilient economy |
+        """)
+
+        future_data = df_ingestion[
+            df_ingestion["Year"] >= 2030
+        ].copy()
+
+        st.warning("""
+        **Policy Target Notice:** The following values are Kenya 2060 policy
+        targets or scenario projections. They are not historical observations
+        and should not be used to evaluate past presidential performance.
+        """)
+
+        st.markdown("### 📊 Strategic Development Targets")
+
+        create_presidential_scorecard(
+            future_data,
+            "Kenya 2060 Strategic Horizons"
+        )
+
+        st.markdown("---")
+        st.markdown("## 📈 Target & Scenario Graphs")
+
+        create_presidential_graphs(
+            future_data,
+            "Kenya 2060 Strategic Horizons"
+        )
+
+        st.markdown("## 📋 Target & Scenario Data")
+
+        display_scorecard_table(future_data)
+
+    display_validated_sources()
+
+
+# ============================================================
+# SECTION 7: DATA INGESTION & PEER VERIFICATION
+# ============================================================
+
+elif app_mode == "Data Ingestion & Peer Verification Portal":
+
+    st.header("7. Data Ingestion & Peer Verification Portal")
+
+    st.write("""
+    This portal provides a transparent audit trail for the Kenya 2060
+    development framework. Stakeholders can inspect the underlying indicators,
+    distinguish historical observations from targets and download the dataset
+    for independent review.
+    """)
+
+    # Data status filter
+    selected_status = st.multiselect(
+        "Filter by Data Status",
+        options=df_ingestion["Data_Status"].unique(),
+        default=df_ingestion["Data_Status"].unique()
+    )
+
+    filtered_data = df_ingestion[
+        df_ingestion["Data_Status"].isin(selected_status)
+    ]
+
+    st.subheader("📊 Kenya 2060 Development Data Registry")
+
+    st.dataframe(
+        filtered_data,
+        use_container_width=True,
+        hide_index=True
+    )
+
+    # Download button
+    csv_bytes = filtered_data.to_csv(
+        index=False
+    ).encode("utf-8")
+
+    st.download_button(
+        label="📥 Download Kenya 2060 Audit Dataset (.CSV)",
+        data=csv_bytes,
+        file_name="kenya_2060_development_audit.csv",
+        mime="text/csv",
+        help="Download the selected dataset for independent analysis."
+    )
+
+    st.markdown("---")
+
+    st.subheader("🔍 Data Verification Principles")
+
+    st.markdown("""
+    - **Historical data** should be traceable to an official or authoritative source.
+    - **Current estimates** should be updated when official releases become available.
+    - **Scenario projections** must disclose their underlying assumptions.
+    - **Kenya 2060 targets** must never be presented as historical outcomes.
+    - **Composite indicators** must publish their methodology and weighting model.
+    """)
+
+    display_validated_sources()
+
+
+# ============================================================
+# SECTION 8: INFRASTRUCTURE-TO-INDUSTRY MANDATE
+# ============================================================
+
+elif app_mode == "Infrastructure-to-Industry Mandate":
+
+    st.header("8. Infrastructure-to-Industry Co-Investment Mandate")
+
+    st.write("""
+    The Kenya 2060 Framework proposes that major infrastructure investment
+    should demonstrate a credible relationship with productive economic
+    activity, industrial demand and sustainable value creation.
+    """)
+
+    st.warning("""
+    🛑 **The Infrastructure Productivity Principle**
+
+    Major infrastructure should be evaluated alongside its connection to
+    industrial growth, private-sector demand, value chains, environmental
+    sustainability and long-term financial viability.
+    """)
+
+    st.markdown("""
+    ### Kenya 2060 Infrastructure Investment Gate
+
+    Before major infrastructure projects proceed, policymakers should assess:
+
+    1. **Economic Demand** – Is there measurable productive demand?
+    2. **Industrial Linkage** – What value chain will the asset support?
+    3. **Financial Sustainability** – Are lifecycle costs affordable?
+    4. **Environmental Responsibility** – Are climate and environmental risks addressed?
+    5. **Public Participation** – Have affected communities been meaningfully engaged?
+    6. **Regional Inclusion** – Does the project strengthen equitable development?
+    """)
+
+    st.success("""
+    **Kenya 2060 Principle:** Infrastructure is not an end in itself.
+    Every major public asset should contribute to productive capacity,
+    employment, resilience or measurable improvements in public welfare.
+    """)
+
+
+# ============================================================
+# FOOTER
+# ============================================================
+
 st.markdown("---")
-st.markdown("*Repository maintained under Git version control. Contributions and policy pull requests open for stakeholders.*")
+
+st.markdown(
+    """
+    ### 🇰🇪 Kenya 2060 All-Inclusive Development Framework
+
+    *One Kenya. Forty-Seven Contributors. Shared Prosperity.*
+
+    **Data Governance Principle:** Evidence, estimates and aspirations must
+    always be transparently distinguished.
+    """
+)
+
+st.caption(
+    "Repository maintained under version control. Policy contributions, "
+    "data corrections and stakeholder review are encouraged."
+)
+```
