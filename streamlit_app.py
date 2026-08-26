@@ -36,7 +36,7 @@ def get_multidimensional_dataset():
         "Administration_Horizon": [
             "Mwai Kibaki", "Mwai Kibaki", "Mwai Kibaki",
             "Uhuru Kenyatta", "Uhuru Kenyatta", "Uhuru Kenyatta",
-            "William Ruto", "William Ruto (Current Baseline)", "William Ruto (August 2027 AI & Merit Mandate)",
+            "William Ruto", "William Ruto (Current Baseline & Vision 2060 Launch)", "William Ruto (August 2027 AI & Merit Mandate)",
             "Ruto Term II (Reform Scenario)", "Vision 2030 / Milestone", "AU Agenda 2045 Horizon", "Kenya Vision 2060 Target"
         ],
         "Real_GDP_Growth_Pct": [
@@ -180,11 +180,14 @@ elif app_mode == "All Categories: Multi-Dimensional Scoring & Graphs":
     )
 
 # ==========================================
-# SECTION 3: 2026 STATUS & AUGUST 2027 AI MANDATE
+# SECTION 3: 2026 STATUS & AUGUST 2027 AI MANDATE (WITH VISION 2060 & CONSTITUTIONAL ALIGNMENT)
 # ==========================================
 elif app_mode == "2026 Status & August 2027 AI, Merit & Transparency Mandate":
     st.header("3. 2026 Baseline & August 2027 AI, Merit & Transparency Mandate")
-    st.write("Evaluating where Kenya stands in 2026 and projecting mandatory deliverables by August 2027.")
+    st.write("""
+    Evaluating where Kenya stands in **2026** and projecting the mandatory institutional deliverables expected by **August 2027** 
+    to ensure that government approvals, public processes, and resource distribution are fully transparent, automated, and merit-based.
+    """)
     
     col_a, col_b = st.columns(2)
     with col_a:
@@ -205,7 +208,29 @@ elif app_mode == "2026 Status & August 2027 AI, Merit & Transparency Mandate":
         """)
     
     st.markdown("---")
-    st.subheader("📜 Constitutional Alignment: Articles 10, 35, 27, 174, 175 & 201")
+    st.subheader("📢 Vision 2060 National Framework: Public Discourse & Presidential Proposals")
+    st.write("""
+    The launch of Kenya's long-term framework beyond Vision 2030 (introduced by President William Ruto in mid-2026) has sparked significant public discourse and structured executive commitments:
+    """)
+    
+    col_disc1, col_disc2 = st.columns(2)
+    with col_disc1:
+        st.markdown("#### 🗣️ What Citizens Communicated")
+        st.markdown("""
+        * **Demand for Immediate Relief:** Long-term planning must directly connect to urgent day-to-day pressures such as the high cost of living, youth unemployment, housing, food security, and healthcare accessibility.
+        * **Skepticism Over Continuity:** Civil society and youth groups questioned whether a 2060 blueprint will survive political cycles or serve as mere policy rebranding.
+        * **Call for Genuine Public Ownership:** Citizens demanded co-authorship rather than passive participation, avoiding past gaps associated with Vision 2030.
+        """)
+    with col_disc2:
+        st.markdown("#### 🏛️ What President Ruto Proposed")
+        st.markdown("""
+        * **People-Driven Constitutional Process:** Shifting away from top-down planning to mandatory public participation across all 47 counties under the 2010 Constitution.
+        * **Insulating Development:** Establishing a legally anchored, multi-decade compact to outlive presidential terms and ensure policy continuity.
+        * **Global Mega-Trend Integration:** Positioning AI, advanced digital infrastructure, biotechnology, clean energy, and climate resilience as core pillars.
+        """)
+
+    st.markdown("---")
+    st.markdown("### 📜 Constitutional Alignment: Articles 10, 35, 27, 174, 175 & 201")
     
     const_data = {
         "Constitutional Article": [
@@ -251,6 +276,9 @@ elif app_mode == "2026 Status & August 2027 AI, Merit & Transparency Mandate":
     * **Access to Information:** [Commission on Administrative Justice](https://ombudsman.go.ke/).
     * **Public Finance & County Budgets:** [Controller of Budget (CoB)](https://www.cob.go.ke/) & [Auditor-General](https://www.oagkenya.go.ke/).
     """)
+    
+    st.markdown("### 📺 President William Ruto: Full Speech Unveiling Kenya's Long-Term Vision")
+    st.video("https://www.youtube.com/watch?v=lfrOU3Yxy5o")
 
 # ==========================================
 # SECTION 4: 2028-2030 RE-ELECTION SCENARIOS
