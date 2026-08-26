@@ -24,6 +24,7 @@ app_mode = str_lit.sidebar.selectbox(
         "Constitutional Alignment & Governance",
         "Global Benchmarking (Morocco & China vs. Kenya)",
         "9-Region & 47-County Architecture",
+        "Presidential Scorecards & Strategic Horizons (2004–2060)",
         "Infrastructure-to-Industry Mandate"
     ]
 )
@@ -163,7 +164,6 @@ elif app_mode == "9-Region & 47-County Architecture":
     }
     
     selected_region = str_lit.selectbox("Select Economic Region to Inspect", list(regions_detailed.keys()))
-    
     reg_data = regions_detailed[selected_region]
     
     str_lit.success(f"**Core Mandate for {selected_region}**: {reg_data['Core Mandate']}")
@@ -178,9 +178,58 @@ elif app_mode == "9-Region & 47-County Architecture":
         str_lit.subheader("🏭 Industrial Specialization & Focus")
         str_lit.write(reg_data["Industrial Focus"])
 
-# --- SECTION 5: INFRASTRUCTURE MANDATE ---
+# --- SECTION 5: PRESIDENTIAL SCORECARDS & STRATEGIC HORIZONS ---
+elif app_mode == "Presidential Scorecards & Strategic Horizons (2004–2060)":
+    str_lit.header("5. National Performance Scorecards & Strategic Horizons (2004–2060)")
+    str_lit.write("""
+    Evaluating national progress requires reviewing historical leadership outcomes from 2004 onward using validated 
+    **Human Development Index (HDI)** data curves and **Sustainable Development Goals (SDGs)**, bridging Vision 2030 
+    toward the Africa Union Agenda 2045 and Kenya Vision 2060.
+    """)
+    
+    tab_kibaki, tab_uhuru, tab_ruto, tab_horizons = str_lit.tabs([
+        "Mwai Kibaki (2003–2013)", 
+        "Uhuru Kenyatta (2013–2022)", 
+        "William Ruto (2022–2027+)", 
+        "Strategic Horizons (Short to 2060)"
+    ])
+    
+    with tab_kibaki:
+        str_lit.subheader("President Mwai Kibaki Administration Scorecard")
+        str_lit.markdown("""
+        * **Macroeconomic & Social Successes:** Resurrected economic growth from near-stagnation (~0.6% in 2002) to over 7% by 2007; introduced Free Primary Education (boosting Education Index under HDI); laid foundational digital infrastructure (TEAMS/SEACOM fiber cables) and launched Vision 2030.
+        * **Structural Failures & Gaps:** Persistent regional wealth disparities and underinvestment in Arid and Semi-Arid Lands (ASAL), leaving structural inequality unaddressed.
+        * **Empirical HDI / SDG Mapping:** High performance on SDG 4 (Quality Education) and SDG 8 (Decent Work & Economic Growth); lagging on SDG 10 (Reduced Inequalities).
+        """)
+        
+    with tab_uhuru:
+        str_lit.subheader("President Uhuru Kenyatta Administration Scorecard")
+        str_lit.markdown("""
+        * **Macroeconomic & Social Successes:** Delivered massive physical infrastructure (Standard Gauge Railway, major arterial highways, port expansions); successfully embedded devolution under Chapter 11; scaled digital government services (eCitizen).
+        * **Structural Failures & Gaps:** Accumulated extensive commercial foreign debt creating severe debt-servicing pressures; manufacturing contribution to GDP fell short of the 15% Big Four target.
+        * **Empirical HDI / SDG Mapping:** High on SDG 9 (Industry, Innovation, and Infrastructure); challenged on SDG 8 due to public debt burdens.
+        """)
+        
+    with tab_ruto:
+        str_lit.subheader("President William Ruto Administration Scorecard & 2027 Targets")
+        str_lit.markdown("""
+        * **Macroeconomic & Social Successes:** Deepened financial inclusion and digital credit access (Hustler Fund); scaled electronic voucher systems for agricultural inputs; expanded external labor markets and restructured Universal Health Coverage (SHA).
+        * **Structural Failures & Resistance:** Aggressive revenue mobilization and heavy taxation measures sparked severe public friction, dampening short-term consumer purchasing power and straining MSMEs.
+        * **Realistic 2027 Targets:** Single-digit inflation normalization, completion of devolved digital hubs, and transition toward private-public partnerships (PPPs) to ease fiscal deficits.
+        * **Empirical HDI / SDG Mapping:** Strong focus on SDG 17 (Partnerships for the Goals); heavily tested on SDG 1 (No Poverty) and SDG 2 (Zero Hunger).
+        """)
+        
+    with tab_horizons:
+        str_lit.subheader("Temporal Horizons: Short-Term, Mid-Term (AU Agenda 2045), and Long-Term (Vision 2060)")
+        str_lit.markdown("""
+        * **Short-Term Goals (2026–2027):** Fiscal stabilization, inflation control, completing stalled county projects, and protecting household purchasing power.
+        * **Mid-Term Goals (Aligning with AU Agenda 2045):** Deepening African Continental Free Trade Area (AfCFTA) integration, transitioning Kenya's 9 economic regions to value-added regional manufacturing, and moving into the High Human Development HDI bracket (0.700+).
+        * **Long-Term Goals (Kenya Vision 2060):** Achieving a fully mature, climate-resilient, knowledge-based economy driven by green technology, advanced artificial intelligence, biotechnology, and equitable regional co-reliance.
+        """)
+
+# --- SECTION 6: INFRASTRUCTURE MANDATE ---
 elif app_mode == "Infrastructure-to-Industry Mandate":
-    str_lit.header("5. Infrastructure-to-Industry Co-Investment Mandate")
+    str_lit.header("6. Infrastructure-to-Industry Co-Investment Mandate")
     str_lit.write("""
     To ensure public resources are never wasted on idle assets (avoiding historical mistakes seen in uncoordinated global projects), 
     the proposal mandates strict interlinkage:
@@ -199,4 +248,5 @@ elif app_mode == "Infrastructure-to-Industry Mandate":
 
 # Footer
 str_lit.markdown("---")
+str_lit.markdown("*Repository maintained under Git version control. Contributions and policy pull requests open for stakeholders.*")
 str_lit.markdown("*Repository maintained under Git version control. Contributions and policy pull requests open for stakeholders.*")
