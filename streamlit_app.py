@@ -20,7 +20,7 @@ st.title("🇰🇪 Kenya 2060 All-Inclusive Development Framework")
 st.markdown("### *One Kenya. Forty-Seven Contributors. Shared Prosperity.*")
 st.caption(
     "An interactive policy, governance risk, AI transparency architecture, "
-    "and multi-dimensional scoring model (HDI, SDGs, Kenya 2060, & AU Agenda 2045)."
+    "and verifiable multi-dimensional scoring model (HDI, SDGs, Kenya 2060, & AU Agenda 2045)."
 )
 st.markdown("---")
 
@@ -80,6 +80,10 @@ def get_multidimensional_dataset():
 
 df_macro = get_multidimensional_dataset()
 
+# Helper function for CSV downloads
+def convert_df_to_csv(df):
+    return df.to_csv(index=False).encode('utf-8')
+
 # ==========================================
 # SIDEBAR NAVIGATION
 # ==========================================
@@ -119,14 +123,13 @@ if app_mode == "Executive Summary & Vision":
 # SECTION 2: MULTI-DIMENSIONAL SCORING
 # ==========================================
 elif app_mode == "Multi-Dimensional Scoring (HDI, SDGs, Kenya 2060, AU 2045)":
-    st.header("2. Multi-Dimensional Development Scoring Framework")
+    st.header("2. Multi-Dimensional Development Scoring & Verification")
     st.write("""
     This section evaluates Kenya's progression across four critical score domains from historical baselines (2004) 
     through the **August 2027 AI & Meritocracy Mandate**, the **2028–2030 reform window**, the **AU Agenda 2045 horizon**, 
     and ultimately **Kenya Vision 2060**.
     """)
     
-    # Latest / Current 2026 Scorecard metric display
     current_row = df_macro[df_macro["Year"] == 2026].iloc[0]
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Human Development (HDI)", f"{current_row['HDI_Score']:.3f}", "Target: 0.810 (2060)")
@@ -135,26 +138,54 @@ elif app_mode == "Multi-Dimensional Scoring (HDI, SDGs, Kenya 2060, AU 2045)":
     col4.metric("AU Agenda 2045 Score", f"{current_row['AU_Agenda_2045_Score']:.1f}/100", "Target: 100 (2045)")
 
     st.markdown("---")
-    st.subheader("📈 Multi-Dimensional Score Trajectory (2004 - 2060)")
     
-    # Plotly multi-index comparison
+    # Chart 1: Composite Scores (SDGs, Kenya 2060, AU 2045)
+    st.subheader("📈 Composite Framework Scores (2004 - 2060)")
     fig_multi = px.line(
         df_macro, x="Year", y=["SDG_Composite_Score", "Kenya_2060_Vision_Score", "AU_Agenda_2045_Score"],
         markers=True, title="Comparative Index Progression (SDGs, Kenya 2060, & AU Agenda 2045)",
         labels={"value": "Score (0 - 100)", "variable": "Framework Dimension", "Year": "Year"}
     )
     st.plotly_chart(fig_multi, use_container_width=True)
+    
+    st.info("""
+    **Data Source & Validation Footnote (Composite Indices):**
+    * *SDG Composite Score:* Compiled using UN Sustainable Development Report methodology and Kenya National Bureau of Statistics (KNBS) SDG indicator tracking.
+    * *Kenya 2060 Vision Score:* Proprietary framework index tracking regional industrial clustering, AI governance automation, and merit-based institutional reforms.
+    * *AU Agenda 2045 Score:* Benchmarked against African Union Agenda 2063 / 2045 aspiration pillars (integrated continent, good governance, and shared prosperity).
+    """)
 
+    st.markdown("---")
+    
+    # Chart 2: HDI Trajectory
     st.subheader("🌐 Human Development Index (HDI) Trajectory")
     fig_hdi = px.line(
         df_macro, x="Year", y="HDI_Score", markers=True,
         title="Human Development Index (HDI) Long-Term Growth",
-        labels={"HDI_Score": "HDI Score", "Year": "Year"},
+        labels={"HDI_Score": "HDI Score (0.0 - 1.0)", "Year": "Year"},
         hover_data=["Administration_Horizon", "Data_Status"]
     )
     st.plotly_chart(fig_hdi, use_container_width=True)
+    
+    st.info("""
+    **Data Source & Validation Footnote (HDI Score):**
+    * *Source:* UNDP Human Development Reports (Historical Data 2004–2023) and Ministry of Devolution / KNBS macro-projections (2026–2060).
+    * *Computation:* Geometric mean of normalized indices measuring three basic dimensions of human development: health (life expectancy), education (mean years of schooling), and standard of living (GNI per capita).
+    """)
 
-    st.markdown("### Underlying Multi-Dimensional Data Matrix")
+    st.markdown("---")
+    st.subheader("📥 Downloadable Tangible Dataset")
+    st.write("You can download the exact multi-dimensional scoring dataset used to generate these graphs below for offline verification and analysis:")
+    
+    csv_data = convert_df_to_csv(df_macro)
+    st.download_button(
+        label="Download Multi-Dimensional Dataset (CSV)",
+        data=csv_data,
+        file_name="Kenya_2060_Multidimensional_Framework_Data.csv",
+        mime="text/csv",
+    )
+
+    st.markdown("### Underlying Data Table")
     st.dataframe(df_macro[["Year", "Administration_Horizon", "HDI_Score", "SDG_Composite_Score", "Kenya_2060_Vision_Score", "AU_Agenda_2045_Score", "Data_Status"]], use_container_width=True, hide_index=True)
 
 # ==========================================
@@ -289,5 +320,5 @@ st.markdown("---")
 st.markdown("""
 ### Kenya 2060 All-Inclusive Development Framework
 *One Kenya. Forty-Seven Contributors. Shared Prosperity.*  
-**Multi-Dimensional Scoring Notice:** Integrates HDI, SDGs, Kenya 2060 Vision, and AU Agenda 2045 scorecards.
+**Multi-Dimensional Scoring Notice:** Integrates HDI, SDGs, Kenya 2060 Vision, and AU Agenda 2045 scorecards with verifiable data source footnotes and CSV export options.
 """)
