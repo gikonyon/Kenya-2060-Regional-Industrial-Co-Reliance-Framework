@@ -118,6 +118,29 @@ if app_mode == "Executive Summary & Vision":
     col4.metric("AU Agenda 2045 Score", "52.0 / 100", "Continental Alignment")
     
     st.markdown("---")
+    st.subheader("📊 Multi-Dimensional Framework Growth Trajectory (2004–2060)")
+    
+    fig, ax = plt.subplots(figsize=(10, 4.5))
+    ax.plot(df_macro["Year"], df_macro["HDI_Score"] * 100, marker='o', label='HDI Score (Scaled %)', color='#1f77b4', linewidth=2)
+    ax.plot(df_macro["Year"], df_macro["SDG_Composite_Score"], marker='s', label='SDG Composite Score', color='#2ca02c', linewidth=2)
+    ax.plot(df_macro["Year"], df_macro["Kenya_2060_Vision_Score"], marker='^', label='Kenya 2060 Vision Progress', color='#ff7f0e', linewidth=2)
+    ax.plot(df_macro["Year"], df_macro["AU_Agenda_2045_Score"], marker='d', label='AU Agenda 2045 Alignment', color='#9467bd', linewidth=2)
+    
+    ax.set_title("Long-Term National Development Trajectory (2004–2060)", fontsize=11, fontweight='bold')
+    ax.set_xlabel("Year", fontsize=10, fontweight='bold')
+    ax.set_ylabel("Index Score / Percentage", fontsize=10, fontweight='bold')
+    ax.grid(True, linestyle='--', alpha=0.6)
+    ax.legend(loc='upper left', fontsize=9)
+    st.pyplot(fig)
+    
+    st.markdown("---")
+    st.markdown("### 🔗 Verifiable Data Sources & References")
+    st.markdown("""
+    * **Human Development Index (HDI) Data:** [United Nations Development Programme (UNDP) Kenya Reports](https://www.undp.org/kenya) *(Publisher: UNDP)*.
+    * **Sustainable Development Goals (SDGs):** [Kenya National Bureau of Statistics (KNBS) SDG Voluntary National Reviews](https://www.knbs.or.ke/) *(Publisher: KNBS)*.
+    * **Vision 2030 & AU Agenda 2045:** [Kenya Vision 2030 Delivery Secretariat](https://www.vision2030.go.ke/) & [African Union Agenda 2063/2045 Portal](https://au.int/).
+    """)
+    
     st.success("**Core Principle:** Comprehensive tracking across all categories ensures that national growth translates directly into citizen well-being and shared prosperity.")
 
 # ==========================================
@@ -125,18 +148,43 @@ if app_mode == "Executive Summary & Vision":
 # ==========================================
 elif app_mode == "All Categories: Multi-Dimensional Scoring & Graphs":
     st.header("2. All Categories: Visualizations, Data & Verifiable Links")
-    st.write("Explore multi-dimensional progress metrics across all categories.")
+    st.write("Explore multi-dimensional progress metrics across all categories with downloadable datasets.")
     st.dataframe(df_macro, use_container_width=True, hide_index=True)
+    
+    st.markdown("---")
+    st.subheader("📊 Comparative Multi-Index Bar Analysis")
+    
+    fig2, ax2 = plt.subplots(figsize=(10, 4.5))
+    recent_df = df_macro[df_macro["Year"].isin([2010, 2026, 2030, 2060])]
+    bar_width = 0.2
+    x = range(len(recent_df))
+    
+    ax2.bar([i - 1.5*bar_width for i in x], recent_df["SDG_Composite_Score"], bar_width, label='SDG Composite', color='#2ca02c')
+    ax2.bar([i - 0.5*bar_width for i in x], recent_df["Kenya_2060_Vision_Score"], bar_width, label='Vision 2060 Score', color='#ff7f0e')
+    ax2.bar([i + 0.5*bar_width for i in x], recent_df["AU_Agenda_2045_Score"], bar_width, label='AU Agenda 2045', color='#9467bd')
+    
+    ax2.set_xticks(list(x))
+    ax2.set_xticklabels(recent_df["Year"], fontweight='bold')
+    ax2.set_ylabel("Score (0-100)", fontweight='bold')
+    ax2.set_title("Milestone Comparison Across Key Strategic Frameworks", fontweight='bold')
+    ax2.legend()
+    ax2.grid(axis='y', linestyle='--', alpha=0.6)
+    st.pyplot(fig2)
+    
+    st.markdown("---")
+    st.download_button(
+        label="📥 Download Complete Multi-Dimensional Dataset (CSV)",
+        data=convert_df_to_csv(df_macro),
+        file_name="Kenya_2060_Multidimensional_Framework.csv",
+        mime="text/csv"
+    )
 
 # ==========================================
-# SECTION 3: 2026 STATUS & AUGUST 2027 AI MANDATE (WITH CONSTITUTIONAL ALIGNMENT)
+# SECTION 3: 2026 STATUS & AUGUST 2027 AI MANDATE
 # ==========================================
 elif app_mode == "2026 Status & August 2027 AI, Merit & Transparency Mandate":
     st.header("3. 2026 Baseline & August 2027 AI, Merit & Transparency Mandate")
-    st.write("""
-    Evaluating where Kenya stands in **2026** and projecting the mandatory institutional deliverables expected by **August 2027** 
-    to ensure that government approvals, public processes, and resource distribution are fully transparent, automated, and merit-based.
-    """)
+    st.write("Evaluating where Kenya stands in 2026 and projecting mandatory deliverables by August 2027.")
     
     col_a, col_b = st.columns(2)
     with col_a:
@@ -157,41 +205,8 @@ elif app_mode == "2026 Status & August 2027 AI, Merit & Transparency Mandate":
         """)
     
     st.markdown("---")
-    st.subheader("📊 Mandate Milestone Table")
-    status_table = df_macro[df_macro["Year"].between(2026, 2027)][
-        ["Year", "Administration_Horizon", "Real_GDP_Growth_Pct", "HDI_Score", "SDG_Composite_Score", "Data_Status"]
-    ]
-    st.dataframe(status_table, use_container_width=True, hide_index=True)
-
-    st.markdown("---")
-    st.markdown("### 📜 Constitutional Alignment: Articles 10, 35, 27, 174, 175 & 201")
-    st.write("""
-    To ensure true grassroots transformation, the AI and transparency architecture directly operationalizes the core tenets of the **Constitution of Kenya (2010)**:
-    """)
-
-    # Constitutional Articles Breakdown
-    st.markdown("""
-    * **1. Article 10: National Values and Principles of Governance**
-      * *Focus:* Overarching anchor binding all state organs to inclusiveness, good governance, integrity, transparency, and public participation.
-      * *AI Assistance:* Automated data pipelines, open-data dashboards, and ML anomaly detection flag budget irregularities; NLP and conversational bots synthesize public commentary during legislative drafting.
-    * **2. Article 35: Access to Information**
-      * *Focus:* Guarantees citizens the right of access to state-held information necessary for exercising rights and freedoms.
-      * *AI Assistance:* AI search layers, optical character recognition (OCR) for scanned public documents, and multilingual translation into Swahili and local languages demystify complex legal texts and budgets.
-    * **3. Article 27: Equality and Freedom from Discrimination**
-      * *Focus:* Prohibits discrimination and mandates affirmative action to redress disadvantages suffered by marginalized groups.
-      * *AI Assistance:* Predictive analytics identify underserved demographic grids for equitable resource allocation (CDF, healthcare, water), while assistive tech (text-to-speech, visual interpreters) ensures digital inclusion.
-    * **4. Articles 174 & 175: Objects & Principles of Devolved Government**
-      * *Focus:* Promotes democratic, accountable self-governance across the 47 counties and ensures equitable resource sharing.
-      * *AI Assistance:* GIS paired with machine learning tracks county-level own-source revenue (OSR), optimizes agricultural supply chains, and streamlines public service delivery.
-    * **5. Article 201: Principles of Public Finance**
-      * *Focus:* Dictates an equitable society through transparent, prudent, and accountable public expenditure.
-      * *AI Assistance:* Automated continuous auditing algorithms cross-check market pricing in real-time, detect duplicate invoicing, and minimize leakages.
-    """)
-
-    st.markdown("---")
-    st.subheader("📊 Constitutional Alignment & AI Transformation Metrics")
+    st.subheader("📜 Constitutional Alignment: Articles 10, 35, 27, 174, 175 & 201")
     
-    # Constitutional Compliance DataFrame
     const_data = {
         "Constitutional Article": [
             "Article 10 (National Values & Governance)",
@@ -213,66 +228,139 @@ elif app_mode == "2026 Status & August 2027 AI, Merit & Transparency Mandate":
     df_const = pd.DataFrame(const_data)
     st.dataframe(df_const, use_container_width=True, hide_index=True)
 
-    st.markdown("---")
-    st.markdown("### 📈 Visualizing Constitutional Compliance & AI Impact")
-    
-    fig_const, ax_const = plt.subplots(figsize=(10, 5))
+    fig_const, ax_const = plt.subplots(figsize=(10, 4.5))
     bar_width = 0.35
     index = range(len(df_const))
 
-    rects1 = ax_const.bar([i - bar_width/2 for i in index], df_const["Current Baseline (%)"], bar_width, label='Current Baseline Status (%)', color='#1f77b4')
-    rects2 = ax_const.bar([i + bar_width/2 for i in index], df_const["AI-Assisted Target (%)"], bar_width, label='AI-Assisted Target (2027-2030) (%)', color='#2ca02c')
+    ax_const.bar([i - bar_width/2 for i in index], df_const["Current Baseline (%)"], bar_width, label='Current Baseline Status (%)', color='#1f77b4')
+    ax_const.bar([i + bar_width/2 for i in index], df_const["AI-Assisted Target (%)"], bar_width, label='AI-Assisted Target (%)', color='#2ca02c')
 
-    ax_const.set_xlabel('Constitutional Focus Areas', fontweight='bold', fontsize=11)
-    ax_const.set_ylabel('Compliance Score (0-100)', fontweight='bold', fontsize=11)
-    ax_const.set_title('Kenya Constitutional Compliance: Baseline vs. AI-Driven Transformation Impact', fontweight='bold', fontsize=12)
+    ax_const.set_ylabel('Compliance Score (0-100)', fontweight='bold')
+    ax_const.set_title('Constitutional Compliance: Baseline vs. AI-Driven Transformation Impact', fontweight='bold')
     ax_const.set_xticks(list(index))
     ax_const.set_xticklabels(["Art 10: Values", "Art 35: Info", "Art 27: Equality", "Art 174-175: Devolution", "Art 201: Finance"], fontsize=9)
     ax_const.legend(loc='lower right')
     ax_const.grid(axis='y', linestyle='--', alpha=0.6)
-    ax_const.set_ylim(0, 105)
     st.pyplot(fig_const)
 
     st.markdown("---")
     st.markdown("### 🔗 Verifiable Data Sources & Official Links")
     st.markdown("""
-    * **Constitutional Architecture & Devolution Framework:** [National Council for Law Reporting (Kenya Law)](http://kenyalaw.org/) *(Publisher: Kenya Law / Constitution of Kenya)*.
-    * **National Values & Governance Progress:** [Executive Office of the President Reports](https://www.president.go.ke/) *(Publisher: Republic of Kenya)*.
-    * **Access to Information & Administrative Justice:** [Commission on Administrative Justice](https://ombudsman.go.ke/) *(Publisher: Office of the Ombudsman Kenya)*.
-    * **Equality & Marginalized Group Compliance:** [National Gender and Equality Commission (NGEC)](https://www.ngeckenya.org/) *(Publisher: NGEC Kenya)*.
-    * **Public Finance & County Budget Implementation:** [Controller of Budget (CoB)](https://www.cob.go.ke/) & [Office of the Auditor-General](https://www.oagkenya.go.ke/).
+    * **Constitutional Architecture:** [National Council for Law Reporting (Kenya Law)](http://kenyalaw.org/).
+    * **National Values & Governance:** [Executive Office of the President Reports](https://www.president.go.ke/).
+    * **Access to Information:** [Commission on Administrative Justice](https://ombudsman.go.ke/).
+    * **Public Finance & County Budgets:** [Controller of Budget (CoB)](https://www.cob.go.ke/) & [Auditor-General](https://www.oagkenya.go.ke/).
     """)
-    
-    st.markdown("### 📺 Official Strategy Reference Video")
-    st.video("https://www.youtube.com/watch?v=lfrOU3Yxy5o")
 
 # ==========================================
-# SECTION 4: 2028-2030 RE-ELECTION & REFORM
+# SECTION 4: 2028-2030 RE-ELECTION SCENARIOS
 # ==========================================
 elif app_mode == "2028-2030 Re-election Growth & Reform Scenarios":
     st.header("4. 2028–2030 Growth Projections: The Re-election & Reform Scenario")
     st.write("Modeling post-reform transparency dividends and Vision 2030 target convergence.")
+    
+    df_reform = df_macro[df_macro["Year"].between(2026, 2030)]
+    st.dataframe(df_reform, use_container_width=True, hide_index=True)
+    
+    fig3, ax3 = plt.subplots(figsize=(10, 4))
+    ax3.plot(df_reform["Year"], df_reform["Real_GDP_Growth_Pct"], marker='o', color='#d62728', linewidth=2.5)
+    ax3.set_title("Projected Real GDP Growth Trajectory (2026–2030 Reform Scenario)", fontweight='bold')
+    ax3.set_xlabel("Year", fontweight='bold')
+    ax3.set_ylabel("Real GDP Growth Rate (%)", fontweight='bold')
+    ax3.grid(True, linestyle='--', alpha=0.6)
+    st.pyplot(fig3)
+    
+    st.markdown("---")
+    st.markdown("### 🔗 Verifiable Data Sources")
+    st.markdown("""
+    * **Macroeconomic Projections:** [National Treasury & Economic Planning Budget Policy Statement](https://www.treasury.go.ke/) *(Publisher: Republic of Kenya)*.
+    * **Central Bank Economic Reviews:** [Central Bank of Kenya (CBK) Monthly Economic Indicators](https://www.centralbank.go.ke/).
+    """)
 
 # ==========================================
 # SECTION 5: GOVERNANCE RISK
 # ==========================================
 elif app_mode == "Governance Risk: Corruption & Political Stability Index":
     st.header("5. Institutional Risk Analysis: Corruption & Political Stability")
-    st.write("Analyzing Transparency International CPI indices and stability metrics.")
+    st.write("Analyzing Transparency International Corruption Perceptions Index (CPI) and World Bank Political Stability metrics.")
+    
+    df_risk = df_macro[["Year", "Administration_Horizon", "Corruption_Perception_Index", "Political_Stability_Index", "Data_Status"]]
+    st.dataframe(df_risk, use_container_width=True, hide_index=True)
+    
+    fig4, (ax4_1, ax4_2) = plt.subplots(1, 2, figsize=(12, 4))
+    
+    ax4_1.plot(df_macro["Year"], df_macro["Corruption_Perception_Index"], marker='o', color='#8c564b', linewidth=2)
+    ax4_1.set_title("Corruption Perceptions Index (CPI, 0-100)", fontweight='bold')
+    ax4_1.set_xlabel("Year", fontweight='bold')
+    ax4_1.grid(True, linestyle='--', alpha=0.6)
+    
+    ax4_2.plot(df_macro["Year"], df_macro["Political_Stability_Index"], marker='s', color='#e377c2', linewidth=2)
+    ax4_2.set_title("Political Stability & Absence of Violence Index", fontweight='bold')
+    ax4_2.set_xlabel("Year", fontweight='bold')
+    ax4_2.grid(True, linestyle='--', alpha=0.6)
+    
+    st.pyplot(fig4)
+    
+    st.markdown("---")
+    st.markdown("### 🔗 Verifiable Data Sources")
+    st.markdown("""
+    * **Corruption Perceptions Index:** [Transparency International Kenya & Global CPI Reports](https://tikenya.org/) *(Publisher: Transparency International)*.
+    * **Political Stability & Governance Indicators:** [World Bank Worldwide Governance Indicators (WGI)](https://info.worldbank.org/governance/wgi/) *(Publisher: World Bank Group)*.
+    """)
 
 # ==========================================
 # SECTION 6: 9-REGION ARCHITECTURE
 # ==========================================
 elif app_mode == "9-Region & 47-County Architecture":
     st.header("6. Nine-Region, Forty-Seven-County Economic Architecture")
-    st.write("Decentralized economic clusters and productive specialization.")
+    st.write("Decentralized economic clusters, productive specialization, and county-level gross product distribution.")
+    
+    regions_data = {
+        "Economic Region": ["Nairobi Metropolitan", "Central Highland", "Coastal Maritime", "Lake Basin Economic Bloc", "North Rift Cluster", "South Rift Bloc", "Lower Eastern", "Northern Frontier", "Western Cluster"],
+        "Lead Counties": ["Nairobi, Kiambu, Machakos, Kajiado", "Nyeri, Murang'a, Kirinyaga, Nyandarua, Embu", "Mombasa, Kwale, Kilifi, Tana River, Lamu, Taita Taveta", "Kisumu, Siaya, Homa Bay, Migori, Kisii, Nyamira", "Uasin Gishu, Turkana, West Pokot, Elgeyo Marakwet, Nandi, Baringo", "Kericho, Bomet, Nakuru, Narok", "Kitui, Machakos, Makueni", "Garissa, Wajir, Mandera, Marsabit", "Kakamega, Vihiga, Bungoma, Busia"],
+        "Productive Specialization": ["Financial Tech, ICT, Retail Hub", "Horticulture, Dairy, Tea, Agro-processing", "Port Logistics, Blue Economy, Tourism", "Aquaculture, Rice, Sugarcane, Cotton", "Grain Cereals, Livestock, Energy Exploration", "Tea, Tourism, Wheat, Dairying", "Pulp, Green Energy, Dryland Farming", "Livestock Value Chain, Gum Arabic, Solar Energy", "Sugarcane, Maize, Light Manufacturing"],
+        "Devolved Contribution (%)": [28.5, 12.0, 11.5, 14.0, 10.5, 9.0, 6.0, 3.5, 5.0]
+    }
+    df_regions = pd.DataFrame(regions_data)
+    st.dataframe(df_regions, use_container_width=True, hide_index=True)
+    
+    fig5, ax5 = plt.subplots(figsize=(10, 4.5))
+    ax5.barh(df_regions["Economic Region"], df_regions["Devolved Contribution (%)"], color='#17becf')
+    ax5.set_title("Regional Economic Contribution Share Across 47 Counties (%)", fontweight='bold')
+    ax5.set_xlabel("Share of National Productive Output (%)", fontweight='bold')
+    ax5.grid(axis='x', linestyle='--', alpha=0.6)
+    st.pyplot(fig5)
+    
+    st.markdown("---")
+    st.markdown("### 🔗 Verifiable Data Sources")
+    st.markdown("""
+    * **County Gross Domestic Product & Regional Blocs:** [Kenya National Bureau of Statistics (KNBS) Gross County Product Report](https://www.knbs.or.ke/) *(Publisher: KNBS)*.
+    * **Devolution & County Allocation Framework:** [Commission on Revenue Allocation (CRA) Reports](https://www.cra.go.ke/) *(Publisher: CRA Kenya)*.
+    """)
 
 # ==========================================
 # SECTION 7: PRESIDENTIAL SCORECARDS
 # ==========================================
 elif app_mode == "Presidential Scorecards & Strategic Horizons":
     st.header("7. Presidential Scorecards & Strategic Horizons")
+    st.write("Evaluating historical and projected presidential administrative horizons across multi-dimensional metrics.")
+    
     st.dataframe(df_macro, use_container_width=True, hide_index=True)
+    
+    fig6, ax6 = plt.subplots(figsize=(10, 4.5))
+    ax6.plot(df_macro["Year"], df_macro["Real_GDP_Growth_Pct"], marker='o', color='#393b79', linewidth=2.5)
+    ax6.set_title("Real GDP Growth Across Presidential Administrations (2004–2060)", fontweight='bold')
+    ax6.set_xlabel("Year", fontweight='bold')
+    ax6.set_ylabel("Real GDP Growth (%)", fontweight='bold')
+    ax6.grid(True, linestyle='--', alpha=0.6)
+    st.pyplot(fig6)
+    
+    st.markdown("---")
+    st.markdown("### 🔗 Verifiable Data Sources")
+    st.markdown("""
+    * **Historical Economic Performance:** [Central Bank of Kenya Annual Reports](https://www.centralbank.go.ke/).
+    * **Long-Term Strategic Planning:** [Kenya Vision 2030 Secretariat & National Treasury](https://www.vision2030.go.ke/).
+    """)
 
 # ==========================================
 # FOOTER
